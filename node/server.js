@@ -120,22 +120,45 @@ io.on('connection',function(socket) {
 
       if ( data['status'] == 1 ) {
 
-        Friend.create({
+
+        // Another syntax for save
+        /*
+          Friend.create({
+            user_id           : data['user_id'],
+            friend_id         : data['friend_id'],
+            created_datetime  : new Date(),
+            created_ip        : getIp(socket)
+          });
+        */
+
+        Friend.build({
+
           user_id           : data['user_id'],
           friend_id         : data['friend_id'],
           created_datetime  : new Date(),
           created_ip        : getIp(socket)
-        }).done(function() {
-          FriendRequest.count({
-            where: { 
+
+        }).save().done(function() {
+
+        Friend.build({
+          user_id           : data['friend_id'],
+          friend_id         : data['user_id'],
+          created_datetime  : new Date(),
+          created_ip        : getIp(socket)
+        }).save().done(function() {
+
+        FriendRequest.count({
+          where: { 
               recepient_id  : data['user_id'],
               status        : 0
             }
-          }).then(function(count) { 
-          
+          }).done(function(count) { 
+            
             io.emit('append_friend_request',{recepient_id:data['user_id'],count:count});
           
           });
+
+        });
 
         })
 
@@ -151,7 +174,7 @@ io.on('connection',function(socket) {
           io.emit('append_friend_request',{recepient_id:data['user_id'],count:count});
         
         });
-        
+
       }
 
     });
@@ -193,7 +216,7 @@ io.on('connection',function(socket) {
       },
       limit:30,
       order : [
-        ['id','desc']
+        ['id','asc']
       ]
     }).done(function(err, results) {
       if ( err ) {
