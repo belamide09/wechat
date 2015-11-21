@@ -12,6 +12,8 @@ app.set('views', __dirname + '\\app\\view\\');
 app.engine('html', require('ejs').renderFile);
 
 
+var connected   = {};
+
 var seq = require('sequelize');
 
 // set connection
@@ -30,6 +32,7 @@ var Conversation     = require('./app/models/Conversation');
 var Friend           = require('./app/models/Friend');
 var FriendRequest    = require('./app/models/FriendRequest');
 
+var clients = [];
 
 // Access socket io event using routes very helpful in future
 router.route('/getFriendRequest')
@@ -51,6 +54,17 @@ router.route('/getFriendRequest')
 
 /*  This is auto initiated event when Client connects to Your Machine.  */
 io.on('connection',function(socket) {
+
+
+  clients.push(getIp(socket));
+  console.log( clients );
+
+  socket.on('disconnect', function() {
+
+    clients.splice(clients.indexOf(getIp(socket)), 1);
+    console.log(clients);
+
+  });
 
   socket.on('friend_request_evt',function(data) {
 
@@ -229,6 +243,7 @@ io.on('connection',function(socket) {
   });
 
 });
+
 
 /* Add new message */
 var add_message = function (data,callback) {
