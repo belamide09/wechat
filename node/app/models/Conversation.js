@@ -11,7 +11,7 @@ module.exports = con.define('conversations', {
   sender_id			: 	seq.INTEGER,
   recepient_id	: 	seq.INTEGER,
   message 			: 	seq.STRING,
-  created_datetime: seq.DATE()
-  
+  created_datetime: seq.DATE(),
+  created_ip		: 	seq.STRING
 },
 {timestamps : false});

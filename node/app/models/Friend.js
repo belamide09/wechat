@@ -11,10 +11,10 @@ var Friend = con.define('friends', {
     primaryKey : true,
     autoIncrement : true
   },
-  user_id				: 	seq.INTEGER,
-  friend_id			: 	seq.INTEGER,
-  created_datetime: seq.DATE(),
-
+  user_id						: seq.INTEGER,
+  friend_id					: seq.INTEGER,
+  created_datetime	: seq.DATE(),
+  created_ip				: seq.STRING
 },
 {timestamps : false});
 

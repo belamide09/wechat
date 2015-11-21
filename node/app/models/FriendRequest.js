@@ -11,11 +11,11 @@ var FriendRequest = con.define('friend_requests', {
     primaryKey : true,
     autoIncrement : true
   },
-  userId			: 	seq.INTEGER,
-  recepient_id	: 	seq.INTEGER,
-  status 				: 	seq.INTEGER,
-  created_datetime: seq.DATE(),
-
+  userId						: seq.INTEGER,
+  recepient_id			: seq.INTEGER,
+  status 						: seq.INTEGER,
+  created_datetime	: seq.DATE(),
+  created_ip 				: seq.STRING
 },
 {timestamps : false});
 

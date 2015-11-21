@@ -29,7 +29,6 @@ $(document).ready(function() {
 
     socket.on('return_friend_requests',function(data) {
 
-        console.log(data);
         if ( data !== null && data['recepient_id'] == my_id) {
             var requests = data['requests'];
 

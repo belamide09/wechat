@@ -57,10 +57,11 @@ io.on('connection',function(socket) {
     // Add new friend request
     FriendRequest.create({
 
-      userId     :   data['sender_id'],
+      userId        :   data['sender_id'],
       recepient_id  :   data['recepient_id'],
       status        :   0,
-      created_datetime: new Date()
+      created_datetime: new Date(),
+      created_ip      : getIp(socket)
 
     }).done(function() {
 
@@ -101,6 +102,7 @@ io.on('connection',function(socket) {
           required: true
         }]
       }).then(function(results) {
+
       io.emit('return_friend_requests',{recepient_id:recepient_id,requests:results});
     
     });
@@ -116,13 +118,29 @@ io.on('connection',function(socket) {
     
     }).done(function() {
 
-      Friend.create({
-        user_id       :   data['user_id'],
-        friend_id     :   data['friend_id'],
-        created_datetime: new Date()
-      }).done(function() {
+      if ( data['status'] == 1 ) {
 
-        // Count all friend request
+        Friend.create({
+          user_id           : data['user_id'],
+          friend_id         : data['friend_id'],
+          created_datetime  : new Date(),
+          created_ip        : getIp(socket)
+        }).done(function() {
+          FriendRequest.count({
+            where: { 
+              recepient_id  : data['user_id'],
+              status        : 0
+            }
+          }).then(function(count) { 
+          
+            io.emit('append_friend_request',{recepient_id:data['user_id'],count:count});
+          
+          });
+
+        })
+
+      } else {
+
         FriendRequest.count({
           where: { 
             recepient_id  : data['user_id'],
@@ -133,15 +151,17 @@ io.on('connection',function(socket) {
           io.emit('append_friend_request',{recepient_id:data['user_id'],count:count});
         
         });
-
-      })
+        
+      }
 
     });
 
   });
 
   socket.on('message_add_evt',function(data) {
-    
+
+    data['ip']    = getIp(socket);
+
     add_message(data,function(res) {
       if ( res ) {
         io.emit('append_message',data);
@@ -189,15 +209,24 @@ io.on('connection',function(socket) {
 
 /* Add new message */
 var add_message = function (data,callback) {
-   
+
+  
+
   Conversation.create({
     sender_id     :   data['sender_id'],
     recepient_id  :   data['recepient_id'],
     message       :   data['message'],
-    created_datetime: new Date()
+    created_datetime: new Date(),
+    created_ip    :   data['ip']
   })
   callback(true);
 
+}
+
+function getIp(socket) {
+  var socketId  = socket.id;
+  var clientIp  = socket.request.connection.remoteAddress;
+  return clientIp;
 }
 
 app.use('/', router);
@@ -205,3 +234,4 @@ app.use('/', router);
 http.listen(8080,function(){
   console.log("Listening on 8080");
 });
+
