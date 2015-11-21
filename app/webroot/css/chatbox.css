@@ -103,6 +103,10 @@ body {
     padding: 5px;
 }
 
+.popup-box .popup-messages img {
+    max-width: 200px;
+}
+
 .chat-textbox {
     border: 1px solid #a0a0a0;
     height: 20px;
@@ -113,4 +117,7 @@ body {
 .btn-upload-file {
     float: right;
     margin-right: 15px;
+}
+#chat-file {
+    display: none;
 }

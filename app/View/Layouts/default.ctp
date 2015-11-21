@@ -38,13 +38,14 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
     echo $this->Html->css('notification');
     echo $this->Html->script('jquery-1.10.2');
     echo $this->Html->css('bootstrap.min');
-    echo $this->Html->script('http://localhost:8080/socket.io/socket.io.js');
+    echo $this->Html->script('http://localhost:3000/socket.io/socket.io.js');
     echo $this->Html->script('bootstrap');
     echo $this->Html->script('jquery-1.10.2');
     echo $this->Html->script('bootstrap.min');
     echo $this->Html->script('chatbox');
     echo $this->Html->script('notification');
 	?>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
 </head>
 <body>
 	<?php echo $this->fetch('content'); ?>

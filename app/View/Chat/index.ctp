@@ -6,4 +6,7 @@
 <?php echo $this->element('chat_side_bar'); ?>
 <?php echo $this->element('notification'); ?>
 
-<input type="file" id="chat-file" style="display:none;">
+<form action="http://localhost:3000/messages/uploadPhoto" method="post" id="chat-file" enctype="multipart/form-data">
+	<input type="text" class="message" name="message">
+	<input type="file" class="file" name="chatPhoto">
+</form>

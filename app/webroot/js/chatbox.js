@@ -1,5 +1,5 @@
 
-var socket = io.connect('http://localhost:8080');
+var socket = io.connect('http://localhost:3000');
 var selected_friend = {};
 
 
@@ -95,7 +95,7 @@ function register_popup(id, name)
 
     $(".btn-upload-file").click(function() {
 
-        $("#chat-file").click();
+        $("#chat-file input").click();
 
     });
 
@@ -137,7 +137,12 @@ socket.on('append_message',function(data) {
             id = data['recepient_id'];
         }
         if ( typeof(popup_arr[id]) != 'undefined' ) {
-            $("#" + id + " .popup-messages").append(data['sender_name'] + " : " + data['message'] + "<br>");
+            var message = data['sender_name'] + " : ";
+            if ( data['file'] != "" ) {
+                message += '<br><img src="/wechat/uploads/' + data['file'] + '"><br>';
+            }
+            message += data['message']+"<br>";
+            $("#" + id + " .popup-messages").append(message);
         } else {
             register_popup(id, friends[id]['name']);
         }
@@ -158,11 +163,12 @@ socket.on('return_messages',function(data) {
                 container.html("");
                 var messages_list = "";
                 for(var x in messages) {
-                    if ( messages[x]['recepient_id'] == my_id ) {
-                        $("#" + selected_friend['id'] + " .popup-messages").html(messages_list += my_name + " : " + messages[x]['message']+"<br>");
-                    } else {
-                        $("#" + selected_friend['id'] + " .popup-messages").html(messages_list += selected_friend['name'] + " : " + messages[x]['message']+"<br>");
+                    var name = messages[x]['recepient_id'] == my_id ? my_name : name;
+                    messages_list += my_name + " : ";
+                    if ( messages[x]['file'] != "" ) {
+                        messages_list += '<br><img src="/wechat/uploads/' + messages[x]['file'] + '"><br>';
                     }
+                    messages_list += messages[x]['message']+"<br>"
                 }
                 container.html(messages_list);
                 var scroll_height = container.prop("scrollHeight") - container.prop("clientHeight");
@@ -182,19 +188,37 @@ function sendMessage(evt) {
         var msg = msg_container.val();
         var id          = container.attr('id');
 
-        if ( $("#chat-file")[0].files.length > 0 ) {
+        if ( $("#chat-file .file")[0].files.length > 0 ) {
 
             var confirmation = confirm('Would you like to send this uploaded file?');
             if ( confirmation == true ) {
-                alert('uploaded');
+
+                $("#chat-file .message").val(msg);
+
+                $("#chat-file").ajaxSubmit({
+                    error: function(xhr) {
+                        $("#chat-file .file").val("");
+                        console.log( xhr.status );
+                    },
+                    success: function(response) {
+
+                        $("#chat-file .file").val("");
+                        if ( response != "0" ) {
+                            var data = {sender_name:my_name,sender_id:my_id,recepient_id:id,message:msg};
+                            data['file'] = response;
+                            socket.emit('message_add_evt',data);
+                            msg_container.val("");
+                        }
+                    }
+                });
+
             }
 
 
         } else if ( msg != "" ) {
-
             var data = {sender_name:my_name,sender_id:my_id,recepient_id:id,message:msg};
+            data['file'] = '';
             socket.emit('message_add_evt',data);
-
             msg_container.val("");
 
         }

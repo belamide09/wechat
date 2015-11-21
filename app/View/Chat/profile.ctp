@@ -61,3 +61,7 @@
 		}
 		?>
 </div>
+<form action="http://localhost:3000/messages/uploadPhoto" method="post" id="chat-file" enctype="multipart/form-data">
+	<input type="text" class="message" name="message">
+	<input type="file" class="file" name="chatPhoto">
+</form>

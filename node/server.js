@@ -1,5 +1,6 @@
 // Require modules
 var express     =     require('express');
+var multer      =     require('multer');
 var app         =     express();
 var mysql       =     require("mysql");
 var http        =     require('http').Server(app);
@@ -7,6 +8,7 @@ var io          =     require("socket.io")(http);
 var router      =     express.Router();
 var getIP       =     require('ipware')().get_ip;
 var bodyParser  =     require('body-parser');
+var upload      =     multer({ dest: './uploads/'});
 
 app.set('views', __dirname + '\\app\\view\\');
 app.engine('html', require('ejs').renderFile);
@@ -25,6 +27,32 @@ app.get("/",function(req,res){
   // Displaying welcome message into node index
   res.send("Welcome to node");
 
+});
+
+
+app.use(multer({ dest: './../app/webroot/uploads/',
+    rename: function (fieldname, filename) {
+      return filename+Date.now();
+    },
+    onFileUploadStart: function (file) {
+      console.log(file.originalname + ' is starting ...');
+    },
+    onFileUploadComplete: function (file) {
+      console.log(file.fieldname + ' uploaded to  ' + file.path)
+    }
+}));
+
+app.post('/messages/uploadPhoto',function(req,res){
+  res.header("Access-Control-Allow-Origin", "*");
+  upload(req,res,function(err) {
+      if( err ) {
+        return res.end("0");
+      } else {
+        if ( typeof(req) != 'undefined' ) {
+          res.end(req.files['chatPhoto']['name']);
+        }
+      }
+  });
 });
 
 var User             = require('./app/models/User');
@@ -215,7 +243,7 @@ io.on('connection',function(socket) {
   socket.on('get_messages',function(data) {
 
     Conversation.findAll({
-      attributes: ['recepient_id','message'],
+      attributes: ['recepient_id','message','file'],
       where: {
 
         $or :[
@@ -256,6 +284,7 @@ var add_message = function (data,callback) {
     sender_id     :   data['sender_id'],
     recepient_id  :   data['recepient_id'],
     message       :   data['message'],
+    file          :   data['file'],
     created_datetime: new Date(),
     created_ip    :   data['ip']
 
@@ -275,7 +304,7 @@ function getIp(socket) {
 
 app.use('/', router);
 
-http.listen(8080,function(){
-  console.log("Listening on 8080");
+http.listen(3000,function(){
+  console.log("Listening on 3000");
 });
 
