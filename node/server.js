@@ -110,7 +110,10 @@ io.on('connection',function(socket) {
           'friend_requests.userId',
           'User.name'
         ],
-        where: { recepient_id: recepient_id },
+        where: { 
+          recepient_id  : recepient_id,
+          status        : 0
+        },
         include: [{
           model: User,
           required: true
@@ -248,16 +251,19 @@ io.on('connection',function(socket) {
 /* Add new message */
 var add_message = function (data,callback) {
 
-  
-
   Conversation.create({
+
     sender_id     :   data['sender_id'],
     recepient_id  :   data['recepient_id'],
     message       :   data['message'],
     created_datetime: new Date(),
     created_ip    :   data['ip']
+
+  }).done(function() {
+
+    callback(true);
+
   })
-  callback(true);
 
 }
 
