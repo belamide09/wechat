@@ -1,0 +1,60 @@
+#messages-container {
+	background: #fff;
+	width: 96%;
+	height: 500px;
+	margin: 10px auto;
+}
+.user-name-container {
+	padding: 10px;
+	background: #fff;
+	width: 95%;
+	margin: 0px auto;
+}
+#messages {
+	height: 440px;
+	padding: 5px;
+	overflow-y: scroll;
+}
+#conversations-container {
+	margin: 50px;
+	width: 500px;
+	background: #000;
+	height: 700px;
+	position: relative;
+	border: 1px solid #ddd;
+}
+.title {
+	padding: 5px;
+}
+#name {
+	margin-left: 10px;
+	height: 25px;
+	width: 200px;
+}
+#messagebox {
+	width: 98%;
+	position:absolute;
+	margin-left: 5px;
+	margin-top: 10px;
+	padding: 5px;
+  bottom: 0px;
+}
+#login_button {
+	margin-top: 5px;
+	float: right;
+}
+#add_message {
+	margin-top: 5px;
+	float: right;
+}
+#btn-login {
+	margin: 2px;
+	float: right;
+}
+#comment {
+	resize: none;
+}
+#error_message {
+	display: none;
+	color: red;
+}
