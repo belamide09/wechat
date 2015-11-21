@@ -129,7 +129,7 @@ socket.on('append_message',function(data) {
             id = data['recepient_id'];
         }
         if ( typeof(popup_arr[id]) != 'undefined' ) {
-            $("#" + id + " .popup-messages").prepend(data['sender_name'] + " : " + data['message'] + "<br>");
+            $("#" + id + " .popup-messages").append(data['sender_name'] + " : " + data['message'] + "<br>");
         } else {
             register_popup(id, friends[id]['name']);
         }
