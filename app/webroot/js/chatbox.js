@@ -86,10 +86,18 @@ function register_popup(id, name)
     element = element + '<div class="popup-head">';
     element = element + '<div class="popup-head-left"><a class="chat-friend-name" href="/profile/'+id+'" target="_">'+ name +'</a></div>';
     element = element + '<div class="popup-head-right"><a href="javascript:close_popup(\''+ id +'\');">&#10005;</a></div>';
-    element = element + '<div style="clear: both"></div></div><div class="popup-messages"></div><input type="text" class="chat-textbox"></div>';
+    element = element + '<div style="clear: both"></div></div><div class="popup-messages"></div><input type="text" class="chat-textbox">';
+    element = element + '<a class="btn btn-primary btn-xs btn-upload-file"><span class="glyphicon glyphicon-picture"></span></a>';
+    element = element + '</div>';
 
     $("body").append(element);
     $("#" + id + ".popup-box .chat-textbox").keypress(sendMessage);
+
+    $(".btn-upload-file").click(function() {
+
+        $("#chat-file").click();
+
+    });
 
     popups.unshift(id);
             
@@ -174,7 +182,15 @@ function sendMessage(evt) {
         var msg = msg_container.val();
         var id          = container.attr('id');
 
-        if ( msg != "" ) {
+        if ( $("#chat-file")[0].files.length > 0 ) {
+
+            var confirmation = confirm('Would you like to send this uploaded file?');
+            if ( confirmation == true ) {
+                alert('uploaded');
+            }
+
+
+        } else if ( msg != "" ) {
 
             var data = {sender_name:my_name,sender_id:my_id,recepient_id:id,message:msg};
             socket.emit('message_add_evt',data);
@@ -186,7 +202,6 @@ function sendMessage(evt) {
 
     }
 }
-
 
 //recalculate when window is loaded and also when window is resized.
 window.addEventListener("resize", calculate_popups);

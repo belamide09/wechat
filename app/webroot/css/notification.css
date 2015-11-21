@@ -1,6 +1,7 @@
 .notification_ul {
     list-style: none;
     float: right;
+    margin-top: 20px;
     margin-right: 300px;
 }
 .notification_li {

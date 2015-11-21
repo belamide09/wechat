@@ -5,3 +5,5 @@
 </script>
 <?php echo $this->element('chat_side_bar'); ?>
 <?php echo $this->element('notification'); ?>
+
+<input type="file" id="chat-file" style="display:none;">

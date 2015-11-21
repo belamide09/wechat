@@ -34,9 +34,14 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
 		echo $this->fetch('css');
 		echo $this->fetch('script');
 		echo $this->Html->css('chatbox');
+    echo $this->Html->css('bootstrap');
     echo $this->Html->css('notification');
-    echo $this->Html->script('http://localhost:8080/socket.io/socket.io.js');
     echo $this->Html->script('jquery-1.10.2');
+    echo $this->Html->css('bootstrap.min');
+    echo $this->Html->script('http://localhost:8080/socket.io/socket.io.js');
+    echo $this->Html->script('bootstrap');
+    echo $this->Html->script('jquery-1.10.2');
+    echo $this->Html->script('bootstrap.min');
     echo $this->Html->script('chatbox');
     echo $this->Html->script('notification');
 	?>
