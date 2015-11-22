@@ -163,8 +163,9 @@ socket.on('return_messages',function(data) {
                 container.html("");
                 var messages_list = "";
                 for(var x in messages) {
-                    var name = messages[x]['recepient_id'] == my_id ? my_name : name;
-                    messages_list += my_name + " : ";
+                    var sender_id   = messages[x]['sender_id'];
+                    var name        = sender_id == my_id ? my_name : friends[sender_id]['name'];
+                    messages_list += name + " : ";
                     if ( messages[x]['file'] != "" ) {
                         messages_list += '<br><img src="/wechat/uploads/' + messages[x]['file'] + '"><br>';
                     }

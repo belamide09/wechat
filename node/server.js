@@ -31,28 +31,31 @@ app.get("/",function(req,res){
 
 
 app.use(multer({ dest: './../app/webroot/uploads/',
-    rename: function (fieldname, filename) {
-      return filename+Date.now();
-    },
-    onFileUploadStart: function (file) {
-      console.log(file.originalname + ' is starting ...');
-    },
-    onFileUploadComplete: function (file) {
-      console.log(file.fieldname + ' uploaded to  ' + file.path)
-    }
+  rename: function (fieldname, filename) {
+    return filename + Date.now();
+  },
+  onFileUploadStart: function (file) {
+    console.log( file.originalname + ' is starting ...' );
+  },
+  onFileUploadComplete: function (file) {
+    console.log( file.fieldname + ' uploaded to  ' + file.path )
+  }
 }));
 
-app.post('/messages/uploadPhoto',function(req,res){
+app.post('/messages/uploadPhoto',function(req,res) {
+
   res.header("Access-Control-Allow-Origin", "*");
+
   upload(req,res,function(err) {
-      if( err ) {
-        return res.end("0");
-      } else {
-        if ( typeof(req) != 'undefined' ) {
-          res.end(req.files['chatPhoto']['name']);
-        }
+    if( err ) {
+      return res.end("0");
+    } else {
+      if ( typeof(req) != 'undefined' ) {
+        res.end(req.files['chatPhoto']['name']);
       }
+    }
   });
+
 });
 
 var User             = require('./app/models/User');
@@ -243,7 +246,7 @@ io.on('connection',function(socket) {
   socket.on('get_messages',function(data) {
 
     Conversation.findAll({
-      attributes: ['recepient_id','message','file'],
+      attributes: ['recepient_id','sender_id','message','file'],
       where: {
 
         $or :[
