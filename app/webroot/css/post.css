@@ -1,0 +1,129 @@
+#post-box {
+    width: 70%;
+    margin: 50px 100px;
+}
+.facebook-share-box {
+    width: 100%;
+}
+.facebook-share-box .share {
+    -webkit-transition: 0.1s ease-out height;
+    -moz-transition: 0.1s ease-out height;
+    -ms-transition: 0.1s ease-out height;
+    -o-transition: 0.1s ease-out height;
+    transition: 0.1s ease-out height;
+    clear: both;
+    background: white;
+    border: 2px solid #dddddd;
+    margin-bottom: 10px;
+    position: relative;
+}
+ 
+.facebook-share-box .share .arrow {
+    background: url(arrow.png) no-repeat #dddddd;
+    position: absolute;
+    width: 14px;
+    height: 10px;
+    left: 4px;
+    display: inline;
+    top: -10px;
+    -webkit-transition: 0.3s ease-out all;
+    -moz-transition: 0.3s ease-out all;
+    -ms-transition: 0.3s ease-out all;
+    -o-transition: 0.3s ease-out all;
+    transition: 0.3s ease-out all;
+}
+ 
+.facebook-share-box .post-types li a {
+    color: #085083;
+    text-decoration: none;
+}
+ 
+.facebook-share-box .post-types li a.active {
+    color: #404040;
+}
+ 
+.facebook-share-box .post-types {
+    padding-left: 5px;
+}
+ 
+.facebook-share-box ul {
+    list-style: none;
+    margin-bottom: 9px;
+}
+ 
+.facebook-share-box .post-types li {
+    display: inline;
+    margin-right: 10px;
+}
+ 
+.message {
+    border-radius: 0;
+    border: none;
+}
+.panel {
+    border-radius: 0;
+    border: none;
+    margin-bottom: 0;
+}
+ 
+.privacy-dropdown {
+    width: 100px;
+}
+
+
+#posts {
+    margin-left: 100px;
+    width: 75%;
+    border: 1px solid transparent;
+}
+.post {
+    width: 90%;
+    margin: 0px auto;
+    background:  #f9f9f9;
+    padding: 5px;
+    margin: 10px;
+    border: 1px solid #ddd;
+}
+.post .users-image {
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+}
+.post .users-image img {
+    width: 40px;
+    height: 40px;
+}
+.post .name {
+    margin-left: 10px;
+}
+.post .time {
+    font: 12px "Trebuchet MS",sans-serif;
+}
+.post .description {
+    padding: 10px;
+}
+.post .description img {
+    max-width: 300px;
+}
+.post .comment-box {
+    margin: 10px;
+}
+.post .comment-box .image {
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+}
+.post .comment-box .image img {
+    max-width: 40px;
+    max-height: 40px;
+}
+.post .comment-box .txt-comment {
+    width: 500px;
+    margin-left: 5px;
+}
+.post .comment table tr td:first-child {
+    vertical-align: top;
+}
+.post .comments {
+    margin: 20px;
+} 

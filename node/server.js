@@ -7,8 +7,20 @@ var http        =     require('http').Server(app);
 var io          =     require("socket.io")(http);
 var router      =     express.Router();
 var getIP       =     require('ipware')().get_ip;
+var requestIp   =     require('request-ip');
+var dateFormat  =     require('dateformat');
 var bodyParser  =     require('body-parser');
-var upload      =     multer({ dest: './uploads/'});
+var upload      =     multer();
+
+var days        = {
+  0: 'Sun',
+  1: 'Mon',
+  2: 'Tue',
+  3: 'Wed',
+  4: 'Thu',
+  5: 'Fri',
+  6: 'Sat'
+}
 
 app.set('views', __dirname + '\\app\\view\\');
 app.engine('html', require('ejs').renderFile);
@@ -29,39 +41,12 @@ app.get("/",function(req,res){
 
 });
 
-
-app.use(multer({ dest: './../app/webroot/uploads/',
-  rename: function (fieldname, filename) {
-    return filename + Date.now();
-  },
-  onFileUploadStart: function (file) {
-    console.log( file.originalname + ' is starting ...' );
-  },
-  onFileUploadComplete: function (file) {
-    console.log( file.fieldname + ' uploaded to  ' + file.path )
-  }
-}));
-
-app.post('/messages/uploadPhoto',function(req,res) {
-
-  res.header("Access-Control-Allow-Origin", "*");
-
-  upload(req,res,function(err) {
-    if( err ) {
-      return res.end("0");
-    } else {
-      if ( typeof(req) != 'undefined' ) {
-        res.end(req.files['chatPhoto']['name']);
-      }
-    }
-  });
-
-});
-
 var User             = require('./app/models/User');
 var Conversation     = require('./app/models/Conversation');
 var Friend           = require('./app/models/Friend');
 var FriendRequest    = require('./app/models/FriendRequest');
+var Post             = require('./app/models/Post');
+var Comment          = require('./app/models/Comment');
 
 var clients = [];
 
@@ -79,6 +64,73 @@ router.route('/getFriendRequest')
     res.send(count);
   
   });
+
+});
+
+// for chat uploads
+app.use(multer({ dest: './../app/webroot/uploads/',
+  rename: function (fieldname, filename) {
+    return filename + Date.now();
+  },
+  onFileUploadStart: function (file) {
+    console.log( file.originalname + ' is starting ...' );
+  },
+  onFileUploadComplete: function (file) {
+    console.log( file.fieldname + ' uploaded to  ' + file.path )
+  }
+}));
+
+
+router.route('/messages/uploadPhoto')
+
+.post(function(req,res) {
+
+  res.header("Access-Control-Allow-Origin", "*");
+
+  upload(req,res,function(err) {
+    if( err ) {
+      return res.end("0");
+    } else {
+      res.end(req.files['chatPhoto']['name']);
+    }
+  });
+
+});
+
+router.route('/posts/add')
+
+.post(function(req,res) {
+
+  res.header("Access-Control-Allow-Origin", "*");
+  var data = req.body;
+
+
+  if ( typeof(req.files['postPhoto']) != 'undefined' ) {
+    upload(req,res,function(err) {
+      Post.create({
+        user_id       :   data['user_id'],
+        text          :   data['text'],
+        file          :   req.files['postPhoto']['name'],
+        created_datetime: new Date(),
+        created_ip    :   requestIp.getClientIp(req)
+      }).done(function() {
+        // Redirect to referer
+        res.writeHead(302, {'Location': req.headers['referer']});
+        res.end();
+      })
+    });
+  } else {
+    Post.create({
+      user_id       :   data['user_id'],
+      text          :   data['text'],
+      created_datetime: new Date(),
+      created_ip    :   requestIp.getClientIp(req)
+    }).done(function() {
+      // Redirect to referer
+      res.writeHead(302, {'Location': req.headers['referer']});
+      res.end();
+    })
+  }
 
 });
 
@@ -273,6 +325,27 @@ io.on('connection',function(socket) {
         io.emit('return_messages',{partner_id:data['partner_id'],sender_id:data['sender_id'],messages: results });
       }
     });
+
+  });
+
+  socket.on('add_comment',function(data) {
+    var date  = new Date();
+    var day   = date.getDay();
+    var date  = dateFormat(date, "m/d/yyyy");
+    date      = date + " (" + days[day] + ") " + dateFormat(new Date(), "HH:mm");
+    data['created_datetime'] = date;
+    Comment.create({
+
+      post_id : data['post_id'],
+      user_id : data['user_id'],
+      comment : data['comment'],
+      created_datetime: new Date(),
+      created_ip    :   getIp(socket)
+
+    }).done(function() {
+      io.emit('append_comment',data);
+      io.emit('return_notification',{data:'success'});
+    })
 
   });
 

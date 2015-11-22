@@ -38,20 +38,53 @@ class ChatController extends Controller {
     'Session'
 	);
 	public $uses = array(
+		'Comment',
 		'Friend',
 		'FriendRequest',
-		'User'
+		'User',
+		'Post'
 	);
 
 	private function getEmployeeInfo() {
 		$data = array(
 			'my_id' 		=> $this->Auth->user('id'),
-			'my_name' 	=> $this->Auth->user('name')
+			'my_name' 	=> $this->Auth->user('name'),
+			'my_photo'  => $this->Auth->user('photo')
 		);
 		return $data;
 	}
 
-	public function getFriends() {
+	private function getPosts($id) {
+		$friends = $this->Friend->find('list',array(
+			'fields' => array('Friend.friend_id'),
+			'conditions' => array(
+				'Friend.user_id' => $id
+			))
+		);
+		$friends[] = $id;
+		$conditions = array(
+			'OR' => array(
+				'Post.user_id' => $friends
+			)
+		);
+		$posts = $this->Post->find('all',array(
+			'conditions' => $conditions
+			)
+		);
+		for($x = 0 ; $x < count($posts) ; $x++) {
+			$post = $posts[$x];
+			$post_id = $post['Post']['id'];
+			$comments = $this->Comment->find('all',array(
+				'conditions' => array(
+					'Comment.post_id' => $post_id
+				))
+			);
+			$posts[$x]['Comment'] = $comments;
+		}
+		return $posts;
+	}
+
+	private function getFriends() {
 		$joins 		= array(
 			array(
 				'table' => 'users',
@@ -86,10 +119,12 @@ class ChatController extends Controller {
 	}
 
 	public function index() {
+		$posts = $this->getPosts($this->Auth->user('id'));
 		$total_friend_request = $this->countFriendRequest();
 		$friends = $this->getFriends();
 		$this->set(compact('total_friend_request'));
 		$this->set(compact('friends'));
+		$this->set(compact('posts'));
 		$this->set($this->getEmployeeInfo());
 	}
 
