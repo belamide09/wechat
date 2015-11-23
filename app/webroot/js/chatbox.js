@@ -139,7 +139,7 @@ socket.on('append_message',function(data) {
         if ( typeof(popup_arr[id]) != 'undefined' ) {
             var message = data['sender_name'] + " : ";
             if ( data['file'] != "" ) {
-                message += '<br><img src="/wechat/uploads/' + data['file'] + '"><br>';
+                message += '<br><img src="/uploads/' + data['file'] + '"><br>';
             }
             message += data['message']+"<br>";
             $("#" + id + " .popup-messages").append(message);
@@ -167,7 +167,7 @@ socket.on('return_messages',function(data) {
                     var name        = sender_id == my_id ? my_name : friends[sender_id]['name'];
                     messages_list += name + " : ";
                     if ( messages[x]['file'] != "" ) {
-                        messages_list += '<br><img src="/wechat/uploads/' + messages[x]['file'] + '"><br>';
+                        messages_list += '<br><img src="/uploads/' + messages[x]['file'] + '"><br>';
                     }
                     messages_list += messages[x]['message']+"<br>"
                 }

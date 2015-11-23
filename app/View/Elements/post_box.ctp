@@ -9,7 +9,7 @@
           <div class="">
           	<input type="hidden" name="user_id" value="<?php echo $my_id; ?>">
             <textarea name="text" cols="40" rows="10" class="form-control message" style="height: 62px; overflow: hidden;" placeholder="What's on your mind ?"></textarea> 
-            <input type="file" name="postPhoto" id="postPhoto" style="display:none">
+            <input type="file" name="postPhoto" id="postPhoto" accept="image/.jpeg,.jpg,.png,.gif" style="display:none">
 				</div>
         </div>
 			 <div class="panel-footer">

@@ -10,7 +10,7 @@
 
 <form action="http://localhost:3000/messages/uploadPhoto" method="post" id="chat-file" enctype="multipart/form-data">
 	<input type="text" class="message" name="message">
-	<input type="file" class="file" name="chatPhoto">
+	<input type="file" class="file" name="chatPhoto" accept="image/.jpeg,.jpg,.png,.gif">
 </form>
 <?php echo $this->element('post_box')?>
 <?php echo $this->element('posts')?>

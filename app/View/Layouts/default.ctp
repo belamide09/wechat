@@ -48,7 +48,6 @@ $cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
     echo $this->Html->script('notification');
     echo $this->Html->script('post');
 	?>
-	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery.form/3.51/jquery.form.min.js"></script>
 </head>
 <body>
 	<?php echo $this->fetch('content'); ?>

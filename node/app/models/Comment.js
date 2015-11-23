@@ -14,7 +14,7 @@ var Comment = con.define('comments', {
   post_id			: 	seq.INTEGER,
   user_id			: 	seq.INTEGER,
   comment 		: 	seq.STRING,
-  created_datetime	: 	seq.DATE(),
+  created_datetime	: 	seq.STRING,
   created_ip	: 	seq.STRING
 },
 {timestamps : false});

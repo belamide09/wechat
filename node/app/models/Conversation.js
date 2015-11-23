@@ -12,7 +12,7 @@ module.exports = con.define('conversations', {
   recepient_id		: 	seq.INTEGER,
   message 			: 	seq.STRING,
   file 				: 	seq.STRING,
-  created_datetime	: 	seq.DATE(),
+  created_datetime	: 	seq.STRING,
   created_ip		: 	seq.STRING
 },
 {timestamps : false});

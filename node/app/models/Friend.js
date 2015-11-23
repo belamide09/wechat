@@ -13,7 +13,7 @@ var Friend = con.define('friends', {
   },
   user_id						: seq.INTEGER,
   friend_id					: seq.INTEGER,
-  created_datetime	: seq.DATE(),
+  created_datetime	: seq.STRING,
   created_ip				: seq.STRING
 },
 {timestamps : false});

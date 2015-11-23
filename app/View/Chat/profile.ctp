@@ -65,3 +65,5 @@
 	<input type="text" class="message" name="message">
 	<input type="file" class="file" name="chatPhoto">
 </form>
+<?php echo $this->element('post_box')?>
+<?php echo $this->element('posts')?>

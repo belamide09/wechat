@@ -41,8 +41,9 @@ class ChatController extends Controller {
 		'Comment',
 		'Friend',
 		'FriendRequest',
-		'User',
-		'Post'
+		'Notification',
+		'Post',
+		'User'
 	);
 
 	private function getEmployeeInfo() {
@@ -77,7 +78,9 @@ class ChatController extends Controller {
 			$comments = $this->Comment->find('all',array(
 				'conditions' => array(
 					'Comment.post_id' => $post_id
-				))
+				),
+				'order' => array('Comment.id' => 'DESC')
+				)
 			);
 			$posts[$x]['Comment'] = $comments;
 		}
@@ -120,12 +123,26 @@ class ChatController extends Controller {
 
 	public function index() {
 		$posts = $this->getPosts($this->Auth->user('id'));
+		$total_notifications = $this->countNotifications();
 		$total_friend_request = $this->countFriendRequest();
 		$friends = $this->getFriends();
+		$this->set(compact('total_notifications'));
 		$this->set(compact('total_friend_request'));
 		$this->set(compact('friends'));
 		$this->set(compact('posts'));
 		$this->set($this->getEmployeeInfo());
+	}
+
+	public function countNotifications() {
+		$conditions = array(
+			'Notification.user_id' => $this->Auth->user('id'),
+			'Notification.has_viewed' => 0
+		);
+		$total = $this->Notification->find('count',array(
+			'conditions' => $conditions
+			)
+		);
+		return $total;
 	}
 
 	public function countFriendRequest() {

@@ -10,11 +10,18 @@
 		$comments = $post['Comment'];
 	?>
 	<div class="post" id="post<?php echo $post_id; ?>">
-		<?php echo $this->Form->hidden('',array(
-			'class' => 'post-id',
-			'value' => $post_id
-			)
-		);?>
+		<?php 
+			echo $this->Form->hidden('',array(
+				'class' => 'post-id',
+				'value' => $post_id
+				)
+			);
+			echo $this->Form->hidden('',array(
+				'class' => 'author-id',
+				'value' => $post['Post']['user_id']
+				)
+			);
+		?>
 		<table>
 			<tr>
 				<td>

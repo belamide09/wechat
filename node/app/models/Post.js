@@ -15,7 +15,7 @@ var Post = con.define('posts', {
   user_id			: 	seq.INTEGER,
   text				: 	seq.TEXT,
   file	 			: 	seq.STRING,
-  created_datetime	: 	seq.DATE(),
+  created_datetime	: 	seq.STRING(),
   created_ip		: 	seq.STRING
 },
 {timestamps : false});

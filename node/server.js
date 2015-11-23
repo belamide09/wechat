@@ -41,12 +41,13 @@ app.get("/",function(req,res){
 
 });
 
-var User             = require('./app/models/User');
-var Conversation     = require('./app/models/Conversation');
-var Friend           = require('./app/models/Friend');
-var FriendRequest    = require('./app/models/FriendRequest');
-var Post             = require('./app/models/Post');
-var Comment          = require('./app/models/Comment');
+var User                  = require('./app/models/User');
+var Conversation          = require('./app/models/Conversation');
+var Friend                = require('./app/models/Friend');
+var FriendRequest         = require('./app/models/FriendRequest');
+var Post                  = require('./app/models/Post');
+var Comment               = require('./app/models/Comment');
+var Notification          = require('./app/models/Notification');
 
 var clients = [];
 
@@ -70,7 +71,7 @@ router.route('/getFriendRequest')
 // for chat uploads
 app.use(multer({ dest: './../app/webroot/uploads/',
   rename: function (fieldname, filename) {
-    return filename + Date.now();
+    return Date.now();
   },
   onFileUploadStart: function (file) {
     console.log( file.originalname + ' is starting ...' );
@@ -111,11 +112,11 @@ router.route('/posts/add')
         user_id       :   data['user_id'],
         text          :   data['text'],
         file          :   req.files['postPhoto']['name'],
-        created_datetime: new Date(),
+        created_datetime: dateFormat(new Date(), "yyyy-mm-dd HH:mm:ss"),
         created_ip    :   requestIp.getClientIp(req)
       }).done(function() {
         // Redirect to referer
-        res.writeHead(302, {'Location': req.headers['referer']});
+        res.redirect(req.headers['referer']);
         res.end();
       })
     });
@@ -123,11 +124,11 @@ router.route('/posts/add')
     Post.create({
       user_id       :   data['user_id'],
       text          :   data['text'],
-      created_datetime: new Date(),
+      created_datetime: dateFormat(new Date(), "yyyy-mm-dd HH:mm:ss"),
       created_ip    :   requestIp.getClientIp(req)
     }).done(function() {
       // Redirect to referer
-      res.writeHead(302, {'Location': req.headers['referer']});
+      res.redirect(req.headers['referer']);
       res.end();
     })
   }
@@ -157,7 +158,7 @@ io.on('connection',function(socket) {
       userId        :   data['sender_id'],
       recepient_id  :   data['recepient_id'],
       status        :   0,
-      created_datetime: new Date(),
+      created_datetime: dateFormat(new Date(), "yyyy-mm-dd hh:mm:ss"),
       created_ip      : getIp(socket)
 
     }).done(function() {
@@ -223,29 +224,29 @@ io.on('connection',function(socket) {
 
         // Another syntax for save
         /*
-          Friend.create({
+          Friend.build({
             user_id           : data['user_id'],
             friend_id         : data['friend_id'],
             created_datetime  : new Date(),
             created_ip        : getIp(socket)
-          });
+          }).save();
         */
 
-        Friend.build({
+        Friend.create({
 
           user_id           : data['user_id'],
           friend_id         : data['friend_id'],
-          created_datetime  : new Date(),
+          created_datetime  : dateFormat(new Date(), "yyyy-mm-dd hh:mm:ss"),
           created_ip        : getIp(socket)
 
-        }).save().done(function() {
+        }).done(function() {
 
-        Friend.build({
+        Friend.create({
           user_id           : data['friend_id'],
           friend_id         : data['user_id'],
-          created_datetime  : new Date(),
+          created_datetime  : dateFormat(new Date(), "yyyy-mm-dd hh:mm:ss"),
           created_ip        : getIp(socket)
-        }).save().done(function() {
+        }).done(function() {
 
         FriendRequest.count({
           where: { 
@@ -332,20 +333,56 @@ io.on('connection',function(socket) {
     var date  = new Date();
     var day   = date.getDay();
     var date  = dateFormat(date, "m/d/yyyy");
-    date      = date + " (" + days[day] + ") " + dateFormat(new Date(), "HH:mm");
+    date      = date + " (" + days[day] + ") " + dateFormat(new Date(), "hh:mm");
     data['created_datetime'] = date;
     Comment.create({
 
       post_id : data['post_id'],
       user_id : data['user_id'],
       comment : data['comment'],
-      created_datetime: new Date(),
+      created_datetime: dateFormat(new Date(), "yyyy-mm-dd hh:mm:ss"),
       created_ip    :   getIp(socket)
 
     }).done(function() {
       io.emit('append_comment',data);
       io.emit('return_notification',{data:'success'});
     })
+
+  });
+
+
+  socket.on('add_notification',function(data) {
+
+    Notification.create({
+
+      post_id       : data['post_id'],
+      user_id       : data['user_id'],
+      type          : data['type'],
+      has_viewed    : 0,
+      has_read      : 0,
+      created_datetime: dateFormat(new Date(), "yyyy-mm-dd hh:mm:ss"),
+      created_ip    :   getIp(socket)
+    
+    }).done(function() {
+      
+      Notification.count({
+        where: { 
+          user_id     : data['user_id'],
+          has_viewed  : 0
+        }
+      }).done(function(count) {
+
+        io.emit('return_total_notification',{user_id:data['user_id'],count:count});
+
+      })
+
+    })
+
+  })
+
+  socket.on('view_all_notifications',function(user_id) {
+
+    io.emit('view_all_notifications',user_id);
 
   });
 
@@ -361,7 +398,7 @@ var add_message = function (data,callback) {
     recepient_id  :   data['recepient_id'],
     message       :   data['message'],
     file          :   data['file'],
-    created_datetime: new Date(),
+    created_datetime: dateFormat(new Date(), "yyyy-mm-dd hh:mm:ss"),
     created_ip    :   data['ip']
 
   }).done(function() {
