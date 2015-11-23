@@ -136,6 +136,29 @@ router.route('/posts/add')
 });
 
 
+router.route('/getNotifications/:user_id')
+
+.get(function(req, res) {
+
+  res.header("Access-Control-Allow-Origin", "*");
+  Notification.belongsTo(User, {
+    constraints: false,
+    foreignKey: 'user_id'
+  });
+  Notification.findAll({
+    where: {
+      user_id : req.params['user_id']
+    },
+    include: [User]
+  }).done(function(results) {
+
+    res.render('notifications.html',{results:results});
+
+  })
+
+})
+
+
 /*  This is auto initiated event when Client connects to Your Machine.  */
 io.on('connection',function(socket) {
 
@@ -212,11 +235,8 @@ io.on('connection',function(socket) {
 
   socket.on('response_friend_request_evt',function(data) {
 
-    FriendRequest.update({status: data['status']},
-    {
-    
+    FriendRequest.update({status: data['status']},{
       where: { id : data['friend_request_id'] }
-    
     }).done(function() {
 
       if ( data['status'] == 1 ) {
@@ -350,7 +370,6 @@ io.on('connection',function(socket) {
 
   });
 
-
   socket.on('add_notification',function(data) {
 
     Notification.create({
@@ -364,7 +383,7 @@ io.on('connection',function(socket) {
       created_ip    :   getIp(socket)
     
     }).done(function() {
-      
+
       Notification.count({
         where: { 
           user_id     : data['user_id'],
@@ -382,7 +401,11 @@ io.on('connection',function(socket) {
 
   socket.on('view_all_notifications',function(user_id) {
 
-    io.emit('view_all_notifications',user_id);
+    Notification.update({has_viewed:1},{
+      where: { user_id : user_id }
+    }).done(function() {
+      io.emit('view_all_notifications',user_id);
+    });
 
   });
 

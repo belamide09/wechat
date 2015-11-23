@@ -10,9 +10,9 @@
     <div class="notificationFooter"><a href="#">See All</a></div>
     </div>
   </li>
-  <li class="notification_li" id="notifications">
-    <span class="notification_count"><?php echo $total_notifications; ?></span>
-    <a href="#" class="notificationLink">Notifications</a>
+  <li class="notification_li btn-viewed-notifications" id="notifications">
+    <span class="notification_count btn-viewed-notifications"><?php echo $total_notifications; ?></span>
+    <a href="#" class="notificationLink btn-viewed-notifications">Notifications</a>
 
     <div class="notificationContainer">
     <div class="notificationTitle">Notifications</div>

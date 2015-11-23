@@ -1,0 +1,23 @@
+<% for(var x = 0; x < results.length; x++) { %>
+  <%
+
+  	var description = results[x].type == 1 ? ' has liked your post' : ' has commented to your post'
+  	description 		= results[x].user.name + description
+
+  %>
+	<div class="notification">
+		<table>
+			<tr>
+				<td>
+					<div clas="image">
+						<img src="/users/<%= results[x].user.photo %>">
+					</div>
+				</td>
+				<td> 
+					<div clas="description"> <%= description %> </div>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+<% } %>

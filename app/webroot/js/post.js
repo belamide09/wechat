@@ -33,10 +33,21 @@ $(document).ready(function() {
 				notification['type'] 		= 2;
 
 				socket.emit('add_notification',notification);
-				
+
 			}
 
 		}
+
+	})
+
+	$(".btn-viewed-notifications").click(function() {
+
+		socket.emit('view_all_notifications',my_id);
+		var url = socket.io.uri + "/getNotifications/" + my_id;
+		$.get(url,function(data) {
+			$("#notifications .notificationsBody").html("")
+			$("#notifications .notificationsBody").html(data);
+		});
 
 	})
 
@@ -68,7 +79,7 @@ socket.on('return_total_notification',function(data) {
 
 });
 
-socket.on('view_all_notifications',function(data) {
+socket.on('view_all_notifications',function(user_id) {
 
 	if ( user_id == my_id ) {
 		$("#notifications .notification_count").html("0");

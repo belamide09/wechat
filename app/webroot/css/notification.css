@@ -28,6 +28,10 @@
     z-index: 999;
     display: none; // Enable this after jquery implementation 
 }
+#notifications .notificationContainer {
+    font-size: 10px;
+    padding: 3px;
+}
 .notificationContainer .name {
     font: 12px "Trebuchet MS",sans-serif;
 }
