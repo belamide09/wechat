@@ -40,6 +40,11 @@
     ['controller' => 'chat', 'action' => 'post'],
     ['id' => '\d+', 'pass' => ['id']]
 	);
+	Router::connect(
+    '/notification/:id',
+    ['controller' => 'chat', 'action' => 'notification'],
+    ['id' => '\d+', 'pass' => ['id']]
+	);
 /**
  * Load all plugin routes. See the CakePlugin documentation on
  * how to customize the loading of plugin routes.

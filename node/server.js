@@ -147,7 +147,8 @@ router.route('/getNotifications/:user_id')
   });
   Notification.findAll({
     where: {
-      user_id : req.params['user_id']
+      user_id : req.params['user_id'],
+      has_read: 0
     },
     include: [User]
   }).done(function(results) {

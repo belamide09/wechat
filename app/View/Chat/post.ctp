@@ -37,7 +37,7 @@
 		</table>
 		<div class="description">
 			<?php if ( !empty($file)) :?>
-				<img src="uploads/<?php echo $file?>"><br>
+				<img src="../uploads/<?php echo $file?>"><br>
 			<?php endif; ?>
 			<?php echo $description?>
 		</div>

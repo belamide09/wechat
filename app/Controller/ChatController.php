@@ -197,7 +197,29 @@ class ChatController extends Controller {
 			'order' => array('Comment.id' => 'DESC')
 			)
 		);
+		$my_photo = $this->Auth->user('photo');
 		$detail['Comment'] = $comments;
 		$this->set(compact('detail'));
+		$this->set(compact('my_photo'));
+	}
+
+	public function notification($id = '') {
+		$detail = $this->Notification->findById($id);
+		if ( !isset($detail['Notification']) ) return $this->redirect('/');
+		$this->Notification->id = $detail['Notification']['id'];
+		$this->Notification->save(array('has_read' => 1));
+		$detail = $this->Post->findById($detail['Notification']['post_id']);
+		$comments = $this->Comment->find('all',array(
+			'conditions' => array(
+				'Comment.post_id' => $detail['Post']['id']
+			),
+			'order' => array('Comment.id' => 'DESC')
+			)
+		);
+		$my_photo = $this->Auth->user('photo');
+		$detail['Comment'] = $comments;
+		$this->set(compact('detail'));
+		$this->set(compact('my_photo'));
+		$this->render('post');
 	}
 }
