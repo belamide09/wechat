@@ -35,6 +35,11 @@
     ['controller' => 'chat', 'action' => 'profile'],
     ['id' => '\d+', 'pass' => ['id']]
 	);
+	Router::connect(
+    '/post/:id',
+    ['controller' => 'chat', 'action' => 'post'],
+    ['id' => '\d+', 'pass' => ['id']]
+	);
 /**
  * Load all plugin routes. See the CakePlugin documentation on
  * how to customize the loading of plugin routes.

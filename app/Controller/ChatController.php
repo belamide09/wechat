@@ -159,6 +159,7 @@ class ChatController extends Controller {
 
 	public function profile($id = '') {
 		$profile = $this->User->findById($id);
+		$posts = $this->getPosts($this->Auth->user('id'));
 		$friends = $this->getFriends();
 		$conditions = array(
 			'Friend.user_id' => $this->Auth->user('id'),
@@ -180,8 +181,23 @@ class ChatController extends Controller {
 		$is_friend = isset($is_friend['Friend']) ? true : false;
 		$this->set(compact('is_friend'));
 		$this->set(compact('friend_request'));
+		$this->set(compact('posts'));
 		$this->set(compact('profile'));
 		$this->set(compact('friends'));
 		$this->set($this->getEmployeeInfo());
+	}
+
+	public function post($id = '') {
+		$detail = $this->Post->findById($id);
+		if ( !isset($detail['Post']) ) return $this->redirect('/');
+		$comments = $this->Comment->find('all',array(
+			'conditions' => array(
+				'Comment.post_id' => $id
+			),
+			'order' => array('Comment.id' => 'DESC')
+			)
+		);
+		$detail['Comment'] = $comments;
+		$this->set(compact('detail'));
 	}
 }
